@@ -1,0 +1,35 @@
+name: Build CKAN image
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  IMAGE_NAME: ckan
+  CKAN_VERSION: 2.9.4
+  S3_FILESTORE_VERSION: v1.0.0
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    permissions:
+      packages: write
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Build docker image
+        run: docker build -t ${IMAGE_NAME} --build-arg CKAN_VERSION=${CKAN_VERSION} --build-arg S3_FILESTORE_VERSION=${S3_FILESTORE_VERSION} .
+      
+      - name: Login to registry
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+      
+      - name: Push image
+        run: |
+          IMAGE_ID=ghcr.io/${{ github.repository_owner }}/${IMAGE_NAME}
+          IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
+          IMAGE_TAG=${CKAN_VERSION}
+          docker tag ${IMAGE_NAME} ${IMAGE_ID}:${IMAGE_TAG}
+          docker push ${IMAGE_ID}:${IMAGE_TAG}
