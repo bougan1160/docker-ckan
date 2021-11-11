@@ -16,13 +16,13 @@ RUN pip install --user setuptools==45
 
 
 FROM build-base as ckan
-ENV CKAN_VERSION 2.9.4
+ARG CKAN_VERSION=2.9.4
 
 RUN pip install --user "git+https://github.com/ckan/ckan.git@ckan-${CKAN_VERSION}#egg=ckan[requirements]"
 
 
 FROM build-base as s3filestore
-ENV S3_FILESTORE_VERSION v1.0.0
+ARG S3_FILESTORE_VERSION=v1.0.0
 
 RUN pip install --user -r "https://raw.githubusercontent.com/keitaroinc/ckanext-s3filestore/${S3_FILESTORE_VERSION}/requirements.txt"
 RUN pip install --user "git+https://github.com/keitaroinc/ckanext-s3filestore.git@${S3_FILESTORE_VERSION}#egg=ckanext-s3filestore"

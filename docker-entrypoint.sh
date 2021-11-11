@@ -28,6 +28,9 @@ set_environment () {
 
 update_config () {
   ckan config-tool ${CONFIG} ckan.plugins='stats text_view image_view recline_view datastore datapusher s3filestore'
+  ckan config-tool ${CONFIG} sqlalchemy.url=${CKAN_SQLALCHEMY_URL} > /dev/null 
+  ckan config-tool ${CONFIG} ckan.datastore.write_url=${CKAN_DATASTORE_WRITE_URL} > /dev/null 
+  ckan config-tool ${CONFIG} ckan.datastore.read_url=${CKAN_DATASTORE_READ_URL} > /dev/null 
   ckan config-tool ${CONFIG} ckan.datapusher.callback_url_base=${DATAPUSHER_CALLBACK_URL}
   ckan config-tool ${CONFIG} ckanext.s3filestore.aws_bucket_name=${S3_BUCKET_NAME}
   ckan config-tool ${CONFIG} ckanext.s3filestore.region_name=${S3_REGION}
