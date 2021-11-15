@@ -35,7 +35,7 @@ jobs:
           IMAGE_TAG=${CKAN_VERSION}
           docker tag ${IMAGE_NAME} ${IMAGE_ID}:latest
           docker tag ${IMAGE_NAME} ${IMAGE_ID}:${IMAGE_TAG}
-          docker tag ${IMAGE_NAME} ${IMAGE_ID}:latest
+          docker push ${IMAGE_ID}:latest
           docker push ${IMAGE_ID}:${IMAGE_TAG}
 
   pushToECR:
