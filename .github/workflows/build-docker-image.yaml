@@ -6,9 +6,7 @@ on:
       - main
 
 env:
-  IMAGE_NAME: ckan
   CKAN_VERSION: 2.9.4
-  S3_FILESTORE_VERSION: v1.0.0
 
 jobs:
   build:
@@ -16,6 +14,10 @@ jobs:
     permissions:
       packages: write
       contents: read
+    env:
+      IMAGE_NAME: ckan
+      DOCKER_BUILDKIT: 1
+      S3_FILESTORE_VERSION: v1.0.0
 
     steps:
       - uses: actions/checkout@v2
@@ -31,5 +33,42 @@ jobs:
           IMAGE_ID=ghcr.io/${{ github.repository_owner }}/${IMAGE_NAME}
           IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
           IMAGE_TAG=${CKAN_VERSION}
+          docker tag ${IMAGE_NAME} ${IMAGE_ID}:latest
           docker tag ${IMAGE_NAME} ${IMAGE_ID}:${IMAGE_TAG}
+          docker tag ${IMAGE_NAME} ${IMAGE_ID}:latest
           docker push ${IMAGE_ID}:${IMAGE_TAG}
+
+  pushToECR:
+    runs-on: ubuntu-20.04
+    permissions:
+      id-token: write
+      contents: read
+    needs: build
+    env:
+      IMAGE_NAME: ghcr.io/georepublic/ckan:latest
+      AWS_REGION: ${{secrets.AWS_REGION}}
+      ECR_BASE: ${{secrets.ECR_BASE}}
+      ECR_REPO: ${{secrets.ECR_REPO}}
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Get AWS Credential
+        uses: aws-actions/configure-aws-credentials@master
+        with:
+          role-to-assume: ${{secrets.ROLE_ARN}}
+          role-session-name: ECRSession
+          aws-region: ${{env.AWS_REGION}}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Download Docker image
+        run: docker pull ${IMAGE_NAME}
+      
+      - name: Push Docker Image on ECR
+        run: |
+          IMAGE_TAG=${CKAN_VERSION}
+          docker tag ${IMAGE_NAME} ${ECR_BASE}/${ECR_REPO}:${IMAGE_TAG}
+          docker push ${ECR_BASE}/${ECR_REPO}:${IMAGE_TAG}
