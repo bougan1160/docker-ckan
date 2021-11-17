@@ -35,6 +35,9 @@ update_config () {
   ckan config-tool ${CONFIG} ckanext.s3filestore.aws_bucket_name=${S3_BUCKET_NAME}
   ckan config-tool ${CONFIG} ckanext.s3filestore.region_name=${S3_REGION}
   ckan config-tool ${CONFIG} ckanext.s3filestore.signature_version=s3v4
+  if [ ! -z ${CKAN_LOCALE_DEFAULT} ]; then
+    ckan config-tool ${CONFIG} ckan.locale_default=${CKAN_LOCALE_DEFAULT}
+  fi
   if [ ! -z ${S3_ACCESS_KEY_ID} ]; then
     ckan config-tool ${CONFIG} ckanext.s3filestore.aws_access_key_id=${S3_ACCESS_KEY_ID}
   fi
