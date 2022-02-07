@@ -22,10 +22,10 @@ RUN pip install --user "git+https://github.com/ckan/ckan.git@ckan-${CKAN_VERSION
 
 
 FROM build-base as s3filestore
-ARG S3_FILESTORE_VERSION=v1.0.0
+ARG S3_FILESTORE_VERSION=QOL-8518-ckan-2.9
 
-RUN pip install --user -r "https://raw.githubusercontent.com/keitaroinc/ckanext-s3filestore/${S3_FILESTORE_VERSION}/requirements.txt"
-RUN pip install --user "git+https://github.com/keitaroinc/ckanext-s3filestore.git@${S3_FILESTORE_VERSION}#egg=ckanext-s3filestore"
+RUN pip install --user -r "https://raw.githubusercontent.com/qld-gov-au/ckanext-s3filestore/${S3_FILESTORE_VERSION}/requirements.txt"
+RUN pip install --user "git+https://github.com/qld-gov-au/ckanext-s3filestore.git@${S3_FILESTORE_VERSION}#egg=ckanext-s3filestore"
 
 
 FROM python:3.8-slim

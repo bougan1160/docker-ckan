@@ -6,7 +6,7 @@ services:
       context: .
       args:
         - CKAN_VERSION=2.9.4
-        - S3_FILESTORE_VERSION=v1.0.0
+        - S3_FILESTORE_VERSION=QOL-8518-ckan-2.9
     depends_on:
       solr:
         condition: service_started

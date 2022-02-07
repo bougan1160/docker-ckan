@@ -49,7 +49,6 @@ update_config () {
   fi
   if [ ! -z ${MINIO_PATH} ]; then
     ckan config-tool ${CONFIG} ckanext.s3filestore.host_name=${MINIO_PATH}
-    ckan config-tool ${CONFIG} ckanext.s3filestore.download_proxy=${MINIO_PATH}
   fi
   if [ ! -z ${CKANEXT_S3FILESTORE_ACL} ]; then
     ckan config-tool ${CONFIG} ckanext.s3filestore.acl=${CKANEXT_S3FILESTORE_ACL}
